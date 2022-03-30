@@ -21,6 +21,7 @@ public class AccountController {
         this.registrationService = registrationService;
     }
 
+
     @PostMapping(path = "/signUp", produces = "application/json")
     public ResponseEntity registration(@RequestBody RegistrationDTO dto) throws Exception {
         registrationService.signUp(dto);

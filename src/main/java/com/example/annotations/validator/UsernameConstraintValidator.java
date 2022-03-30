@@ -1,6 +1,6 @@
-package com.example.validationConstraint.validator;
+package com.example.annotations.validator;
 
-import com.example.validationConstraint.annotation.Username;
+import com.example.annotations.annotation.Username;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

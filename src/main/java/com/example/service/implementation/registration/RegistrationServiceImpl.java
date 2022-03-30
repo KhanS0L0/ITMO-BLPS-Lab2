@@ -1,5 +1,6 @@
 package com.example.service.implementation.registration;
 
+import com.example.annotations.annotation.LogXML;
 import com.example.dto.RegistrationDTO;
 import com.example.entity.user.Account;
 import com.example.entity.user.User;
@@ -25,6 +26,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         this.registrationMapper = registrationMapper;
     }
 
+    @LogXML
     @Override
     @Transactional
     public User signUp(RegistrationDTO registrationDTO) throws UserAlreadyExistException {

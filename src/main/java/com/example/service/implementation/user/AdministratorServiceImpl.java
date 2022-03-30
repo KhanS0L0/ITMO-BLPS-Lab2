@@ -1,7 +1,7 @@
 package com.example.service.implementation.user;
 
 import com.example.entity.user.Administrator;
-import com.example.repository.AdministratorRepository;
+import com.example.repository.account.AdministratorRepository;
 import com.example.service.interfaces.user.AdministratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

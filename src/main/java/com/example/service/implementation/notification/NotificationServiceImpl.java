@@ -7,7 +7,7 @@ import com.example.entity.review.TemporaryReview;
 import com.example.entity.user.Administrator;
 import com.example.entity.user.User;
 import com.example.mapper.NotificationMapper;
-import com.example.repository.UserNotificationRepository;
+import com.example.repository.notification.UserNotificationRepository;
 import com.example.service.interfaces.notification.NotificationService;
 import com.example.service.interfaces.review.ReviewService;
 import com.example.service.interfaces.user.AdministratorService;

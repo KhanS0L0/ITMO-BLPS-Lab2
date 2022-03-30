@@ -1,4 +1,4 @@
-package com.example.repository;
+package com.example.repository.review;
 
 import com.example.entity.review.TemporaryReview;
 import com.example.entity.user.Administrator;
