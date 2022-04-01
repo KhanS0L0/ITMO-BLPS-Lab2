@@ -58,8 +58,6 @@ public class LoggerRepositoryImpl implements LoggerRepository {
         } catch (TransformerException | IOException | SAXException | ParserConfigurationException e) {
             e.printStackTrace();
         }
-
-        System.out.println(user.getUsername());
     }
 
     private Document getDocument(String fileName) throws IOException, SAXException, ParserConfigurationException {

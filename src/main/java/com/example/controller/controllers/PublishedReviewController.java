@@ -2,6 +2,9 @@ package com.example.controller.controllers;
 
 import com.example.dto.PublishedReviewDTO;
 import com.example.service.interfaces.review.ReviewService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/published")
+@Api(tags = {"published"}, description = "Управление опубликованными отзывами")
 public class PublishedReviewController {
     private final ReviewService reviewService;
 
@@ -19,7 +23,7 @@ public class PublishedReviewController {
         this.reviewService = reviewService;
     }
 
-    //todo: find a new way to get and userId or you can just change it on username
+    @ApiOperation(value = "Получить все опубликованные отзывы", authorizations = @Authorization("USER"))
     @GetMapping(path = "/all", produces = "application/json")
     public ResponseEntity getPublishedReviews(@RequestAttribute(name = "userId") Long userId){
         List<PublishedReviewDTO> publishedReviews = reviewService.getAllPublishedReviews(userId);

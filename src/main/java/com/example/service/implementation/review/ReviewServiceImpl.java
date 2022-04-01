@@ -74,8 +74,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    //todo make transactional
-    //todo отобразить в бпмн что временая рецензия удаляется и добавляется новая опубликованная
+    @Transactional
     public void savePublishedReview(TemporaryReview review) {
         PublishedReview entity = publishedReviewMapper.mapTemporaryReviewToPublishedReview(review);
         temporaryReviewRepository.delete(review);
