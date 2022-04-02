@@ -5,6 +5,7 @@ import com.example.entity.user.Role;
 import com.example.entity.user.User;
 import com.example.repository.account.RoleRepository;
 import com.example.repository.account.UserRepository;
+import com.example.repository.xml.XmlRepository;
 import com.example.service.interfaces.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,12 +19,14 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final XmlRepository xmlRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, XmlRepository xmlRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.xmlRepository = xmlRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -46,6 +49,8 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(roles);
-        return userRepository.save(user);
+        user = userRepository.save(user);
+        xmlRepository.log(user);
+        return user;
     }
 }

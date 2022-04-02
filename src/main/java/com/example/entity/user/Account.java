@@ -30,4 +30,15 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")
     )
     private List<Role> roles;
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }

@@ -25,6 +25,9 @@ public class AuthTokenFilter extends GenericFilterBean {
             FilterChain filterChain) throws IOException, ServletException {
 
         String token = authTokenProvider.resolveToken((HttpServletRequest) servletRequest);
+        System.out.println("http basic token from request: " + token);
+        System.out.println("username from basic token: " + authTokenProvider.getUsername(token));
+        System.out.println("userId from basic token: " + authTokenProvider.getUserId(token));
 
         if(token != null){
             Authentication authentication = authTokenProvider.getAuthentication(token);

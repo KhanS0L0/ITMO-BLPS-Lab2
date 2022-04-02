@@ -1,8 +1,9 @@
 package com.example.security;
 
 import com.example.entity.user.Account;
+import com.example.repository.xml.XmlRepository;
 import com.example.security.BasicAuthUser.AuthUserFactory;
-import com.example.service.interfaces.user.AccountService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,20 +13,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final AccountService accountService;
+    private final XmlRepository repository;
 
     @Autowired
-    public CustomUserDetailsService(AccountService accountService) {
-        this.accountService = accountService;
+    public CustomUserDetailsService(XmlRepository repository) {
+        this.repository = repository;
     }
 
+    @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountService.findAccountByUsername(username);
+        Account account = repository.findUserByUsername(username);
         if(account == null){
             throw new UsernameNotFoundException("User with username: " + username + " not found");
         }
-
         return AuthUserFactory.create(account);
     }
 }

@@ -143,6 +143,13 @@
             <version>${swagger.version}</version>
         </dependency>
 
+<!--        &lt;!&ndash; Logger &ndash;&gt;-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-log4j2</artifactId>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <build>
