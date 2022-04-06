@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,17 +18,19 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
 public class XmlRepositoryImpl implements XmlRepository {
 
-    @Value("${user.data.file}")
-    private String filePath;
+//    @Value("${user.data.file}")
+    private String filePath = "/Users/hansultan/IdeaProjects/ITMO/ITMO-BLPS-Lab2/src/main/resources/users.xml";
 
     @Override
     public void log(User user) {
@@ -60,8 +60,10 @@ public class XmlRepositoryImpl implements XmlRepository {
                 roles.appendChild(role);
             }
 
+            newUser.appendChild(id);
             newUser.appendChild(login);
             newUser.appendChild(password);
+            newUser.appendChild(email);
             newUser.appendChild(roles);
 
             root.appendChild(newUser);
@@ -75,47 +77,70 @@ public class XmlRepositoryImpl implements XmlRepository {
 
     @Override
     public Account findUserByUsername(String username) throws IOException, ParserConfigurationException, SAXException {
-
         Document document = getDocument(filePath);
         document.getDocumentElement().normalize();
+        XPathFactory xPathFactory = XPathFactory.newInstance();
+        XPath xPath = xPathFactory.newXPath();
 
-        NodeList nodeList = document.getElementsByTagName("user");
+        String[] params = checkUsername(username, document, xPath);
 
-        for (int itr = 0; itr < nodeList.getLength(); itr++) {
-
-            Node node = nodeList.item(itr);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-
-                Element eElement = (Element) node;
-                if(eElement.getElementsByTagName("username").item(0).getTextContent().equals(username)){
-
-                    Account account = new Account();
-                    account.setUsername(username);
-                    account.setId(Long.parseLong(eElement.getElementsByTagName("id").item(0).getTextContent()));
-                    account.setPassword(eElement.getElementsByTagName("password").item(0).getTextContent());
-                    account.setEmail(eElement.getElementsByTagName("email").item(0).getTextContent());
-
-                    List<Role> roles = new ArrayList<>();
-                    NodeList roleList = eElement.getElementsByTagName("role");
-                    for(int j = 0; j < roleList.getLength(); j++){
-                        Element roleElement = (Element)nodeList.item(j);
-                        Role role = new Role();
-                        role.setName(roleElement.getElementsByTagName("role").item(j).getTextContent());
-                        roles.add(role);
-                    }
-
-                    account.setRoles(roles);
-                    return account;
-                }
-            }
+        if(params != null){
+            Account account = new Account();
+            account.setUsername(username);
+            account.setId(findId(params));
+            account.setPassword(findPassword(params));
+            account.setEmail(findEmail(params));
+            account.setRoles(findRoles(params));
+            return account;
         }
 
         return null;
     }
 
+    private String[] checkUsername(String username, Document document, XPath xPath){
+        try {
+            XPathExpression xPathExpression = xPath.compile("/users/user[username='" + username + "']");
+            String params = (String) xPathExpression.evaluate(document, XPathConstants.STRING);
+            if(params != null && !params.isEmpty()) return params.trim().split("\\s+");
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Long findId(String[] userParams){
+        return Long.parseLong(userParams[0]);
+    }
+
+    private String findPassword(String[] userParams){
+        return userParams[2];
+    }
+
+    private String findEmail(String[] userParams){
+        return userParams[3];
+    }
+
+    private List<Role> findRoles(String[] userParams){
+        List<Role> roles = new ArrayList<>();
+        if(userParams.length > 5){
+            for(int i = 4; i < userParams.length; i++){
+                Role role = new Role();
+                role.setName(userParams[i]);
+                roles.add(role);
+            }
+            return roles;
+        }else{
+            Role role = new Role();
+            role.setName(userParams[4]);
+            roles.add(role);
+            return roles;
+        }
+    }
+
     private Document getDocument(String fileName) throws IOException, SAXException, ParserConfigurationException {
         File usersFile = ResourceUtils.getFile(fileName);
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         return documentBuilder.parse(usersFile);
     }

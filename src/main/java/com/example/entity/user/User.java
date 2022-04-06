@@ -31,4 +31,9 @@ public class User extends Account {
      **/
     @OneToMany(mappedBy = "author")
     private List<PublishedReview> publishedReviews;
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
