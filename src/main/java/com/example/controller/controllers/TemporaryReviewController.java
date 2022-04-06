@@ -26,7 +26,7 @@ public class TemporaryReviewController {
 
     @ApiOperation(value = "Получить все отзывы, ожидающие проверки", authorizations = @Authorization("ADMIN"))
     @GetMapping(path = "/all", produces = "application/json")
-    public ResponseEntity getTemporaryReviews(@RequestAttribute(name = "userId") Long administratorId){
+    public ResponseEntity getTemporaryReviews(@RequestAttribute(name = "userId") Long administratorId) throws UserNotFoundException{
         List<TemporaryReviewDTO> temporaryReviews = reviewService.getAllTemporaryReviews(administratorId);
         if(temporaryReviews.isEmpty())
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -44,8 +44,8 @@ public class TemporaryReviewController {
 
     @ApiOperation(value = "обновить содержание отзыва", authorizations = @Authorization("USER"))
     @PutMapping(path = "/update", produces = "application/json")
-    public ResponseEntity updateTemporaryReview(@RequestBody TemporaryReviewDTO dto){
-        reviewService.updateTemporaryReview(dto);
+    public ResponseEntity updateTemporaryReview(@RequestAttribute(name = "username") String username, @RequestBody TemporaryReviewDTO dto){
+        reviewService.updateTemporaryReview(dto, username);
         return ResponseEntity.ok().build();
     }
 }

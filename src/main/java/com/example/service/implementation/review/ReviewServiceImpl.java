@@ -65,8 +65,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void updateTemporaryReview(TemporaryReviewDTO dto) throws NullPointerException {
-        TemporaryReview temporaryReview = temporaryReviewRepository.findTemporaryReviewById(dto.getReviewId());
+    public void updateTemporaryReview(TemporaryReviewDTO dto, String username) throws NullPointerException {
+        TemporaryReview temporaryReview = temporaryReviewRepository.findTemporaryReviewByIdAndAuthorUsername(dto.getReviewId(), username);
         if(temporaryReview == null)
             throw new NullPointerException("No such review");
         temporaryReviewMapper.updateEntity(temporaryReview, dto);
@@ -105,9 +105,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<PublishedReviewDTO> getAllPublishedReviews(Long userId) {
-        User author = userService.findUserById(userId);
-        List<PublishedReview> publishedReviews = publishedReviewRepository.findAllByAuthor(author);
+    public List<PublishedReviewDTO> getAllPublishedReviews() {
+        List<PublishedReview> publishedReviews = publishedReviewRepository.findAll();
         return publishedReviewMapper.mapEntityListToDTOList(publishedReviews);
     }
 }

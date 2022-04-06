@@ -1,12 +1,12 @@
 package com.example.security.AuthUtils;
 
-import com.example.exception.UserNotFoundException;
 import com.example.security.BasicAuthUser.AuthUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +25,7 @@ public class AuthTokenProvider {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Authentication getAuthentication(String token) throws UserNotFoundException {
+    public Authentication getAuthentication(String token) throws UsernameNotFoundException {
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
         if(passwordEncoder.matches(getPassword(token), userDetails.getPassword()))
             return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());

@@ -12,7 +12,7 @@ public interface ReviewService {
 
     void saveNewTemporaryReview(TemporaryReviewDTO dto) throws UserNotFoundException;
 
-    void updateTemporaryReview(TemporaryReviewDTO dto) throws NullPointerException;
+    void updateTemporaryReview(TemporaryReviewDTO dto, String username) throws NullPointerException;
 
     void savePublishedReview(TemporaryReview review);
 
@@ -24,6 +24,6 @@ public interface ReviewService {
 
     List<TemporaryReviewDTO> getAllTemporaryReviews(Long adminId);
 
-    List<PublishedReviewDTO> getAllPublishedReviews(Long userId);
+    List<PublishedReviewDTO> getAllPublishedReviews();
 
 }

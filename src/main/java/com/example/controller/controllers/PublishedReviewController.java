@@ -25,8 +25,8 @@ public class PublishedReviewController {
 
     @ApiOperation(value = "Получить все опубликованные отзывы", authorizations = @Authorization("USER"))
     @GetMapping(path = "/all", produces = "application/json")
-    public ResponseEntity getPublishedReviews(@RequestAttribute(name = "userId") Long userId){
-        List<PublishedReviewDTO> publishedReviews = reviewService.getAllPublishedReviews(userId);
+    public ResponseEntity getPublishedReviews(){
+        List<PublishedReviewDTO> publishedReviews = reviewService.getAllPublishedReviews();
         if(publishedReviews.isEmpty())
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("You don't have any published reviews");
         else

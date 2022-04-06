@@ -14,4 +14,5 @@ public interface TemporaryReviewRepository extends JpaRepository<TemporaryReview
 
     List<TemporaryReview> findAllByInspector(Administrator author);
 
+    TemporaryReview findTemporaryReviewByIdAndAuthorUsername(Long id, String username);
 }

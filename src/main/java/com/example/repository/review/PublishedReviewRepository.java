@@ -14,4 +14,5 @@ public interface PublishedReviewRepository extends JpaRepository<PublishedReview
 
     List<PublishedReview> findAllByAuthor(User author);
 
+    List<PublishedReview> findAll();
 }
