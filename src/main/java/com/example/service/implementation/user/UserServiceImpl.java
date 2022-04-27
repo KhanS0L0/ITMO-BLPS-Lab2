@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(roles);
         user = userRepository.save(user);
-        xmlRepository.log(user);
+        xmlRepository.writeToXml(user);
         return user;
     }
 }

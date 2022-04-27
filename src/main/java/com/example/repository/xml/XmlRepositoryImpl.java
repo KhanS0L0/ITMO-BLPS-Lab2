@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -29,11 +30,11 @@ import java.util.List;
 @Repository
 public class XmlRepositoryImpl implements XmlRepository {
 
-//    @Value("${user.data.file}")
-    private String filePath = "/Users/hansultan/IdeaProjects/ITMO/ITMO-BLPS-Lab2/src/main/resources/users.xml";
+    @Value("${user.data.file}")
+    private String filePath;
 
     @Override
-    public void log(User user) {
+    public void writeToXml(User user) {
         try {
             Document document = getDocument(filePath);
             Element root = document.getDocumentElement();
@@ -82,8 +83,7 @@ public class XmlRepositoryImpl implements XmlRepository {
         XPathFactory xPathFactory = XPathFactory.newInstance();
         XPath xPath = xPathFactory.newXPath();
 
-        String[] params = checkUsername(username, document, xPath);
-
+        List<String> params = checkUsername(username, document, xPath);
         if(params != null){
             Account account = new Account();
             account.setUsername(username);
@@ -97,44 +97,52 @@ public class XmlRepositoryImpl implements XmlRepository {
         return null;
     }
 
-    private String[] checkUsername(String username, Document document, XPath xPath){
+    private List<String> checkUsername(String username, Document document, XPath xPath){
         try {
             XPathExpression xPathExpression = xPath.compile("/users/user[username='" + username + "']");
-            String params = (String) xPathExpression.evaluate(document, XPathConstants.STRING);
-            if(params != null && !params.isEmpty()) return params.trim().split("\\s+");
+            NodeList user = (NodeList) xPathExpression.evaluate(document, XPathConstants.NODESET);
+            NodeList userParams = user.item(0).getChildNodes();
+
+            List<String> params = new ArrayList<>();
+            for(int i = 0; i < userParams.getLength(); i++){
+                if(!userParams.item(i).getNodeName().equals("#text")){
+                    if(userParams.item(i).getNodeName().equals("roles")){
+                        NodeList roles = userParams.item(i).getChildNodes();
+                        for(int j = 0; j < roles.getLength(); j++){
+                            params.add(roles.item(j).getTextContent());
+                        }
+                    }else {
+                        params.add(userParams.item(i).getTextContent());
+                    }
+                }
+            }
+            return params;
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private Long findId(String[] userParams){
-        return Long.parseLong(userParams[0]);
+    private Long findId(List<String> userParams){
+        return Long.parseLong(userParams.get(0));
     }
 
-    private String findPassword(String[] userParams){
-        return userParams[2];
+    private String findPassword(List<String> userParams){
+        return userParams.get(2);
     }
 
-    private String findEmail(String[] userParams){
-        return userParams[3];
+    private String findEmail(List<String> userParams){
+        return userParams.get(3);
     }
 
-    private List<Role> findRoles(String[] userParams){
+    private List<Role> findRoles(List<String> userParams){
         List<Role> roles = new ArrayList<>();
-        if(userParams.length > 5){
-            for(int i = 4; i < userParams.length; i++){
+        for(int i = 4; i < userParams.size(); i++){
                 Role role = new Role();
-                role.setName(userParams[i]);
+                role.setName(userParams.get(i));
                 roles.add(role);
-            }
-            return roles;
-        }else{
-            Role role = new Role();
-            role.setName(userParams[4]);
-            roles.add(role);
-            return roles;
         }
+        return roles;
     }
 
     private Document getDocument(String fileName) throws IOException, SAXException, ParserConfigurationException {

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public interface XmlRepository {
 
-    void log(User user);
+    void writeToXml(User user);
 
     Account findUserByUsername(String username) throws IOException, ParserConfigurationException, SAXException;
 }
